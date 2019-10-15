@@ -14,10 +14,6 @@ FROM ${BASE_IMAGE_PREFIX}alpine
 ARG ARCH
 COPY qemu-${ARCH}-static /usr/bin
 
-RUN apk update && apk upgrade
-
-FROM alpine
-
 ARG GUACAMOLE_Version
 ENV GUACAMOLE_Version=${GUACAMOLE_Version} \
     TOMCAT_MAJOR=8 \
@@ -34,7 +30,8 @@ ENV TOMCAT_NATIVE_LIBDIR="${CATALINA_HOME}/native-jni-lib" \
 
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}${TOMCAT_NATIVE_LIBDIR}"
 
-RUN apk add openjdk8-jre-base ca-certificates tar libressl tomcat-native && \
+RUN apk update && apk upgrade && \
+    apk add openjdk8-jre-base ca-certificates tar libressl tomcat-native && \
     apk add --virtual .native-build-deps apr-dev gcc libc-dev make openjdk8 libressl-dev tomcat-native-dev curl && \
     cd /tmp && \
     mkdir -p "${CATALINA_HOME}" && \
