@@ -39,7 +39,7 @@ RUN apk add openjdk8-jre-base ca-certificates tar libressl tomcat-native && \
     cd /tmp && \
     mkdir -p "${CATALINA_HOME}" && \
     mkdir -p /opt/guacamole/mysql /opt/guacamole/postgresql /opt/guacamole/ldap /opt/guacamole/bin && \
-    curl -L "https://www.apache.org/dyn/closer.cgi?action=download&filename=tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz" \
+    curl -L "http://www.apache.org/dyn/closer.cgi?action=download&filename=tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz" \
         -o - | \
         tar xz -C "${CATALINA_HOME}" --strip-components=1 && \
     curl -L "http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-ldap-${GUACAMOLE_Version}.tar.gz" \
