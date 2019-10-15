@@ -44,16 +44,16 @@ RUN apk add openjdk8-jre-base ca-certificates tar libressl tomcat-native && \
         tar xz -C "${CATALINA_HOME}" --strip-components=1 && \
     curl -L "http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-ldap-${GUACAMOLE_Version}.tar.gz" \
         -o - | \
-        tar x -C "/opt/guacamole/ldap" --strip-components=1 \
+        tar xz -C "/opt/guacamole/ldap" --strip-components=1 \
                                             guacamole-auth-ldap-${GUACAMOLE_Version}/guacamole-auth-ldap-${GUACAMOLE_Version}.jar \
                                             guacamole-auth-ldap-${GUACAMOLE_Version}/schema && \
     curl -L "http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-jdbc-${GUACAMOLE_Version}.tar.gz" \
         -o - | \
-        tar x -C "/opt/guacamole/" --strip-components=1 \
+        tar xz -C "/opt/guacamole/" --strip-components=1 \
                                             guacamole-auth-jdbc-${GUACAMOLE_Version}/mysql \
                                             guacamole-auth-jdbc-${GUACAMOLE_Version}/postgresql && \
     curl -L "https://cdn.mysql.com/Downloads/Connector-J/mysql-connector-java-${MySQL-Connector-Version}.tar.gz" -o - | \
-        tar x -C "/opt/guacamole/mysql" --strip-components=1 \
+        tar xz -C "/opt/guacamole/mysql" --strip-components=1 \
                                             mysql-connector-java-${MySQL-Connector-Version}/mysql-connector-java-${MySQL-Connector-Version}.jar && \
     curl -L "http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-${GUACAMOLE_Version}.war" \
         -o "/opt/guacamole/guacamole.war" && \
