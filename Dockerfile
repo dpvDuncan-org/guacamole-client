@@ -30,34 +30,38 @@ ENV TOMCAT_NATIVE_LIBDIR="${CATALINA_HOME}/native-jni-lib" \
 
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}${TOMCAT_NATIVE_LIBDIR}"
 
-RUN apk update && apk upgrade && \
-    apk add openjdk8-jre-base ca-certificates tar libressl tomcat-native && \
-    apk add --virtual .native-build-deps apr-dev gcc libc-dev make openjdk8 libressl-dev tomcat-native-dev curl && \
+RUN apk --no-cache -U -q upgrade && \
+    apk add --no-cache -U -q openjdk8-jre-base ca-certificates tar libressl tomcat-native curl && \
     cd /tmp && \
     mkdir -p "${CATALINA_HOME}" && \
     mkdir -p /opt/guacamole/mysql /opt/guacamole/postgresql /opt/guacamole/ldap /opt/guacamole/bin && \
+    echo "Downloading http://www.apache.org/dyn/closer.cgi?action=download&filename=tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz" && \
     curl -L "http://www.apache.org/dyn/closer.cgi?action=download&filename=tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz" \
-        -o - | \
-        tar xz -C "${CATALINA_HOME}" --strip-components=1 && \
+        -o - | tar xz -C "${CATALINA_HOME}" --strip-components=1 && \
+    echo "Downloading http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-ldap-${GUACAMOLE_Version}.tar.gz" && \
     curl -L "http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-ldap-${GUACAMOLE_Version}.tar.gz" \
-        -o - | \
-        tar xz -C "/opt/guacamole/ldap" --strip-components=1 \
+        -o - | tar xz -C "/opt/guacamole/ldap" --strip-components=1 \
                                             guacamole-auth-ldap-${GUACAMOLE_Version}/guacamole-auth-ldap-${GUACAMOLE_Version}.jar \
                                             guacamole-auth-ldap-${GUACAMOLE_Version}/schema && \
+    echo "Downloading http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-jdbc-${GUACAMOLE_Version}.tar.gzz" && \
     curl -L "http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-jdbc-${GUACAMOLE_Version}.tar.gz" \
-        -o - | \
-        tar xz -C "/opt/guacamole/" --strip-components=1 \
+        -o - | tar xz -C "/opt/guacamole/" --strip-components=1 \
                                             guacamole-auth-jdbc-${GUACAMOLE_Version}/mysql \
                                             guacamole-auth-jdbc-${GUACAMOLE_Version}/postgresql && \
-    curl -L "https://cdn.mysql.com/Downloads/Connector-J/mysql-connector-java-${MySQL-Connector-Version}.tar.gz" -o - | \
-        tar xz -C "/opt/guacamole/mysql" --strip-components=1 \
+    echo "Downloading https://cdn.mysql.com/Downloads/Connector-J/mysql-connector-java-${MySQL-Connector-Version}.tar.gz" && \
+    curl -L "https://cdn.mysql.com/Downloads/Connector-J/mysql-connector-java-${MySQL-Connector-Version}.tar.gz" \
+        -o - | tar xz -C "/opt/guacamole/mysql" --strip-components=1 \
                                             mysql-connector-java-${MySQL-Connector-Version}/mysql-connector-java-${MySQL-Connector-Version}.jar && \
+    echo "Downloading http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-${GUACAMOLE_Version}.war" && \
     curl -L "http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-${GUACAMOLE_Version}.war" \
         -o "/opt/guacamole/guacamole.war" && \
+    echo "Downloading https://jdbc.postgresql.org/download/postgresql-${PostGresql-Connector-Version}.jar" && \
     curl -L "https://jdbc.postgresql.org/download/postgresql-${PostGresql-Connector-Version}.jar" \
         -o "/opt/guacamole/postgresql/postgresql-${PostGresql-Connector-Version}.jar" && \
+    echo "Downloading https://raw.githubusercontent.com/apache/incubator-guacamole-client/${GUACAMOLE_Version}/guacamole-docker/bin/start.sh" && \
     curl -L "https://raw.githubusercontent.com/apache/incubator-guacamole-client/${GUACAMOLE_Version}/guacamole-docker/bin/start.sh" \
         -o "/opt/guacamole/bin/start.sh" && \
+    echo "Downloading https://raw.githubusercontent.com/apache/incubator-guacamole-client/${GUACAMOLE_Version}/guacamole-docker/bin/initdb.sh" && \
     curl -L "https://raw.githubusercontent.com/apache/incubator-guacamole-client/${GUACAMOLE_Version}/guacamole-docker/bin/initdb.sh" \
         -o "/opt/guacamole/bin/initdb.sh" && \
     set -x && \
