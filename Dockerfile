@@ -36,7 +36,7 @@ RUN apk --no-cache -U -q upgrade && \
     cd /tmp && \
     mkdir -p "${CATALINA_HOME}" && \
     mkdir -p /opt/guacamole/mysql /opt/guacamole/postgresql /opt/guacamole/ldap /opt/guacamole/bin && \
-    export TOMCAT_PATCH=$(curl -s https://www-us.apache.org/dist/tomcat/tomcat-8/ | grep -o v8.5.*\/ | cut -f 3 -d . | cut -f 1 -d /) && \
+    export TOMCAT_PATCH=$(curl -s https://www-us.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR}/ | grep -o v${TOMCAT_MAJOR}.${TOMCAT_MINOR}.*\/ | cut -f 3 -d . | cut -f 1 -d /) && \
     export TOMCAT_Version=${TOMCAT_MAJOR}.${TOMCAT_MINOR}.${TOMCAT_PATCH} && \
     echo "Downloading http://www.apache.org/dyn/closer.cgi?action=download&filename=tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz" && \
     curl -s -L "http://www.apache.org/dyn/closer.cgi?action=download&filename=tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz" \
