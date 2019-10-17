@@ -18,7 +18,7 @@ ARG GUACAMOLE_Version
 
 ENV GUACAMOLE_Version=${GUACAMOLE_Version} \
     TOMCAT_MAJOR=8 \
-    TOMCAT_Version=8.5.47 \
+    TOMCAT_MINOR=5 \
     JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk" \
     LANG=C.UTF-8 \
     CATALINA_HOME="/usr/local/tomcat" \
@@ -36,34 +36,36 @@ RUN apk --no-cache -U -q upgrade && \
     cd /tmp && \
     mkdir -p "${CATALINA_HOME}" && \
     mkdir -p /opt/guacamole/mysql /opt/guacamole/postgresql /opt/guacamole/ldap /opt/guacamole/bin && \
+    export TOMCAT_PATCH=$(curl -s https://www-us.apache.org/dist/tomcat/tomcat-8/ | grep -o v8.5.*\/ | cut -f 3 -d . | cut -f 1 -d /) && \
+    export TOMCAT_Version=${TOMCAT_MAJOR}.${TOMCAT_MINOR}.${TOMCAT_PATCH} && \
     echo "Downloading http://www.apache.org/dyn/closer.cgi?action=download&filename=tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz" && \
-    curl -L "http://www.apache.org/dyn/closer.cgi?action=download&filename=tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz" \
+    curl -s -L "http://www.apache.org/dyn/closer.cgi?action=download&filename=tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz" \
         -o - | tar xz -C "${CATALINA_HOME}" --strip-components=1 && \
     echo "Downloading http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-ldap-${GUACAMOLE_Version}.tar.gz" && \
-    curl -L "http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-ldap-${GUACAMOLE_Version}.tar.gz" \
+    curl -s -L "http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-ldap-${GUACAMOLE_Version}.tar.gz" \
         -o - | tar xz -C "/opt/guacamole/ldap" --strip-components=1 \
                                             guacamole-auth-ldap-${GUACAMOLE_Version}/guacamole-auth-ldap-${GUACAMOLE_Version}.jar \
                                             guacamole-auth-ldap-${GUACAMOLE_Version}/schema && \
     echo "Downloading http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-jdbc-${GUACAMOLE_Version}.tar.gzz" && \
-    curl -L "http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-jdbc-${GUACAMOLE_Version}.tar.gz" \
+    curl -s -L "http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-jdbc-${GUACAMOLE_Version}.tar.gz" \
         -o - | tar xz -C "/opt/guacamole/" --strip-components=1 \
                                             guacamole-auth-jdbc-${GUACAMOLE_Version}/mysql \
                                             guacamole-auth-jdbc-${GUACAMOLE_Version}/postgresql && \
     echo "Downloading https://cdn.mysql.com/Downloads/Connector-J/mysql-connector-java-${MySQL_Connector_Version}.tar.gz" && \
-    curl -L "https://cdn.mysql.com/Downloads/Connector-J/mysql-connector-java-${MySQL_Connector_Version}.tar.gz" \
+    curl -s -L "https://cdn.mysql.com/Downloads/Connector-J/mysql-connector-java-${MySQL_Connector_Version}.tar.gz" \
         -o - | tar xz -C "/opt/guacamole/mysql" --strip-components=1 \
                                             mysql-connector-java-${MySQL_Connector_Version}/mysql-connector-java-${MySQL_Connector_Version}.jar && \
     echo "Downloading http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-${GUACAMOLE_Version}.war" && \
-    curl -L "http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-${GUACAMOLE_Version}.war" \
+    curl -s -L "http://apache.org/dyn/closer.cgi?action=download&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-${GUACAMOLE_Version}.war" \
         -o "/opt/guacamole/guacamole.war" && \
     echo "Downloading https://jdbc.postgresql.org/download/postgresql-${PostGresql_Connector_Version}.jar" && \
-    curl -L "https://jdbc.postgresql.org/download/postgresql-${PostGresql_Connector_Version}.jar" \
+    curl -s -L "https://jdbc.postgresql.org/download/postgresql-${PostGresql_Connector_Version}.jar" \
         -o "/opt/guacamole/postgresql/postgresql-${PostGresql_Connector_Version}.jar" && \
     echo "Downloading https://raw.githubusercontent.com/apache/incubator-guacamole-client/${GUACAMOLE_Version}/guacamole-docker/bin/start.sh" && \
-    curl -L "https://raw.githubusercontent.com/apache/incubator-guacamole-client/${GUACAMOLE_Version}/guacamole-docker/bin/start.sh" \
+    curl -s -L "https://raw.githubusercontent.com/apache/incubator-guacamole-client/${GUACAMOLE_Version}/guacamole-docker/bin/start.sh" \
         -o "/opt/guacamole/bin/start.sh" && \
     echo "Downloading https://raw.githubusercontent.com/apache/incubator-guacamole-client/${GUACAMOLE_Version}/guacamole-docker/bin/initdb.sh" && \
-    curl -L "https://raw.githubusercontent.com/apache/incubator-guacamole-client/${GUACAMOLE_Version}/guacamole-docker/bin/initdb.sh" \
+    curl -s -L "https://raw.githubusercontent.com/apache/incubator-guacamole-client/${GUACAMOLE_Version}/guacamole-docker/bin/initdb.sh" \
         -o "/opt/guacamole/bin/initdb.sh" && \
     set -x && \
     cd "${CATALINA_HOME}" && \
