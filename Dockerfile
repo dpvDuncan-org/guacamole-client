@@ -14,8 +14,7 @@ FROM ${BASE_IMAGE_PREFIX}alpine
 ARG ARCH
 COPY qemu-${ARCH}-static /usr/bin
 
-ARG GUACAMOLE_Version
-ENV GUACAMOLE_Version=${GUACAMOLE_Version} \
+ENV GUACAMOLE_Version="1.0.0" \
     TOMCAT_MAJOR=8 \
     TOMCAT_Version=8.5.47 \
     JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk" \
