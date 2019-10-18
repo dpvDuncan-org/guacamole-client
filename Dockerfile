@@ -32,7 +32,8 @@ ENV TOMCAT_NATIVE_LIBDIR="${CATALINA_HOME}/native-jni-lib" \
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}${TOMCAT_NATIVE_LIBDIR}"
 
 RUN apk --no-cache -U -q upgrade && \
-    apk add --no-cache -U -q openjdk8-jre-base ca-certificates tar libressl tomcat-native curl && \
+    apk add --no-cache -U -q openjdk8-jre-base ca-certificates && \
+    apk add --no-cache --virtual .native-build-deps apr-dev gcc libc-dev make openjdk8 curl jq tar && \
     cd /tmp && \
     mkdir -p "${CATALINA_HOME}" && \
     mkdir -p /opt/guacamole/mysql /opt/guacamole/postgresql /opt/guacamole/ldap /opt/guacamole/bin && \
@@ -69,6 +70,15 @@ RUN apk --no-cache -U -q upgrade && \
         -o "/opt/guacamole/bin/initdb.sh" && \
     set -x && \
     cd "${CATALINA_HOME}" && \
+    mkdir ${nativeBuildDir} && \
+    tar -xzf bin/tomcat-native.tar.gz -C "${nativeBuildDir}" --strip-components=1 && \
+    cd "${nativeBuildDir}/native" && \
+    ./configure --libdir="${TOMCAT_NATIVE_LIBDIR}" --with-java-home="${JAVA_HOME}" --with-ssl=no && \
+    make -j$(getconf _NPROCESSORS_ONLN) && \
+    make install && \
+    rm -rf "${nativeBuildDir}" bin/tomcat-native.tar.gz && \
+    apk add --virtual .tomcat-native-rundeps $(scanelf --needed --nobanner --recursive "${TOMCAT_NATIVE_LIBDIR}" | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' | sort -u | xargs -r apk info --installed | sort -u ) && \
+    apk del .native-build-deps && \
     rm -f bin/*.bat && \
     set -e && \
     nativeLines="$(catalina.sh configtest 2>&1 | grep 'Apache Tomcat Native' | sort -u)" && \
