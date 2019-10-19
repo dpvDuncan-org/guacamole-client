@@ -74,7 +74,7 @@ RUN apk --no-cache -U -q upgrade && \
     tar -xzf bin/tomcat-native.tar.gz -C "${nativeBuildDir}" --strip-components=1 && \
     cd "${nativeBuildDir}/native" && \
     ./configure --libdir="${TOMCAT_NATIVE_LIBDIR}" --with-java-home="${JAVA_HOME}" --with-ssl=no && \
-    make -j$(getconf _NPROCESSORS_ONLN) && \
+    make && \
     make install && \
     rm -rf "${nativeBuildDir}" bin/tomcat-native.tar.gz && \
     apk add --virtual .tomcat-native-rundeps $(scanelf --needed --nobanner --recursive "${TOMCAT_NATIVE_LIBDIR}" | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' | sort -u | xargs -r apk info --installed | sort -u ) && \
