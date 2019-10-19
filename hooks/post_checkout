@@ -9,7 +9,7 @@ echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯�
 # it's an Ubuntu VM and you can install stuff.
 apt-get update
 #apt-get install -y curl qemu-user-static binfmt-support jq moreutils
-apt-get install -y curl binfmt-support jq moreutils
+apt-get install -y curl jq moreutils
 curl -L http://archive.ubuntu.com/ubuntu/pool/universe/q/qemu/qemu-user-static_3.1+dfsg-2ubuntu3.5_amd64.deb -o qemu-user-static.deb
 dpkg -i qemu-user-static.deb
 
