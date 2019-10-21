@@ -78,6 +78,8 @@ RUN apk --no-cache -U -q upgrade && \
     make install && \
     rm -rf "${nativeBuildDir}" bin/tomcat-native.tar.gz && \
     apk add --virtual .tomcat-native-rundeps $(scanelf --needed --nobanner --recursive "${TOMCAT_NATIVE_LIBDIR}" | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' | sort -u | xargs -r apk info --installed | sort -u ) && \
+    echo "----------------------------------------------------------" && \
+    catalina.sh configtest && \
     apk del .native-build-deps && \
     echo "----------------------------------------------------------" && \
     catalina.sh configtest && \
