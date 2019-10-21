@@ -23,11 +23,11 @@ ENV GUACAMOLE_Version=${GUACAMOLE_Version} \
     LANG=C.UTF-8 \
     CATALINA_HOME="/usr/local/tomcat" \
     nativeBuildDir="/tmp/nativeBuild" \
+    TOMCAT_NATIVE_LIBDIR="/usr/lib" \
     MySQL_Connector_Version="8.0.17" \
     PostGresql_Connector_Version="42.2.8"
 
-ENV TOMCAT_NATIVE_LIBDIR="${CATALINA_HOME}/native-jni-lib" \
-    PATH="${CATALINA_HOME}/bin:$PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin"
+ENV PATH="${CATALINA_HOME}/bin:$PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin"
 
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}${TOMCAT_NATIVE_LIBDIR}"
 
@@ -73,11 +73,9 @@ RUN apk --no-cache -U -q upgrade && \
     mkdir ${nativeBuildDir} && \
     tar -xzf bin/tomcat-native.tar.gz -C "${nativeBuildDir}" --strip-components=1 && \
     cd "${nativeBuildDir}/native" && \
-    ./configure --libdir="/usr/lib" --with-apr="$(which apr-1-config)" --with-java-home="${JAVA_HOME}" --with-ssl=no && \
+    ./configure --libdir="${TOMCAT_NATIVE_LIBDIR}" --with-apr="$(which apr-1-config)" --with-java-home="${JAVA_HOME}" --with-ssl=no && \
     make && \
     make install && \
-    echo "----------------------------------------------------------" && \
-    catalina.sh configtest && \
     rm -rf "${nativeBuildDir}" bin/tomcat-native.tar.gz && \
     apk add --virtual .tomcat-native-rundeps $(scanelf --needed --nobanner --recursive "${TOMCAT_NATIVE_LIBDIR}" | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' | sort -u | xargs -r apk info --installed | sort -u ) && \
     apk del .native-build-deps && \
