@@ -70,7 +70,7 @@ RUN apk --no-cache -U -q upgrade && \
         -o "/opt/guacamole/bin/initdb.sh" && \
     set -x && \
     mkdir ${nativeBuildDir} && \
-    tar -xzf bin/tomcat-native.tar.gz -C "${nativeBuildDir}" --strip-components=1 && \
+    tar -xzf ${CATALINA_HOME}/bin/tomcat-native.tar.gz -C "${nativeBuildDir}" --strip-components=1 && \
     cd "${nativeBuildDir}/native" && \
     ./configure --libdir="${TOMCAT_NATIVE_LIBDIR}" --with-apr="$(which apr-1-config)" --with-java-home="${JAVA_HOME}" --with-ssl=no && \
     make && \
