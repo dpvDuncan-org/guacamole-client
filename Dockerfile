@@ -76,14 +76,13 @@ RUN apk --no-cache -U -q upgrade && \
     ./configure --libdir="/usr/lib" --with-apr="$(which apr-1-config)" --with-java-home="${JAVA_HOME}" --with-ssl=no && \
     make && \
     make install && \
-    if ! echo "$nativeLines" | grep 'INFO: Loaded APR based Apache Tomcat Native library' >&2 ; \
-    then \
-    echo >&2 "$nativeLines" ; \
-    exit 1 ; \
-    fi && \
+    echo "----------------------------------------------------------" && \
+    catalina.sh configtest && \
     rm -rf "${nativeBuildDir}" bin/tomcat-native.tar.gz && \
     apk add --virtual .tomcat-native-rundeps $(scanelf --needed --nobanner --recursive "${TOMCAT_NATIVE_LIBDIR}" | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' | sort -u | xargs -r apk info --installed | sort -u ) && \
     apk del .native-build-deps && \
+    echo "----------------------------------------------------------" && \
+    catalina.sh configtest && \
     rm -f bin/*.bat && \
     set -e && \
     nativeLines="$(catalina.sh configtest 2>&1 | grep 'Apache Tomcat Native' | sort -u)" && \
