@@ -69,7 +69,6 @@ RUN apk --no-cache -U -q upgrade && \
     curl -s -L "https://raw.githubusercontent.com/apache/incubator-guacamole-client/${GUACAMOLE_Version}/guacamole-docker/bin/initdb.sh" \
         -o "/opt/guacamole/bin/initdb.sh" && \
     set -x && \
-    cd "${CATALINA_HOME}" && \
     mkdir ${nativeBuildDir} && \
     tar -xzf bin/tomcat-native.tar.gz -C "${nativeBuildDir}" --strip-components=1 && \
     cd "${nativeBuildDir}/native" && \
@@ -77,6 +76,7 @@ RUN apk --no-cache -U -q upgrade && \
     make && \
     make install && \
     rm -rf "${nativeBuildDir}" bin/tomcat-native.tar.gz && \
+    cd "${CATALINA_HOME}" && \
     apk add --virtual .tomcat-native-rundeps $(scanelf --needed --nobanner --recursive "${TOMCAT_NATIVE_LIBDIR}" | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' | sort -u | xargs -r apk info --installed | sort -u ) && \
     echo "----------------------------------------------------------" && \
     catalina.sh configtest && \
