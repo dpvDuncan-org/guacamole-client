@@ -73,7 +73,7 @@ RUN apk --no-cache -U -q upgrade && \
     mkdir ${nativeBuildDir} && \
     tar -xzf bin/tomcat-native.tar.gz -C "${nativeBuildDir}" --strip-components=1 && \
     cd "${nativeBuildDir}/native" && \
-    ./configure --libdir="${TOMCAT_NATIVE_LIBDIR}" --with-java-home="${JAVA_HOME}" --with-ssl=no && \
+    ./configure --libdir="/usr/lib" --with-apr="$(which apr-1-config)" --with-java-home="${JAVA_HOME}" --with-ssl=no && \
     make && \
     make install && \
     rm -rf "${nativeBuildDir}" bin/tomcat-native.tar.gz && \
