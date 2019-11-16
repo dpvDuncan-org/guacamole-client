@@ -4,55 +4,86 @@ set -eu
 echo "🔵 build"
 source hooks/.config
 
-echo "✅ Will build the following architectures: $verified_build_architectures"
+echo "✅ Download Tomcat & binaries)"
+echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+RUN mkdir -p ./guacamole/mysql \
+                ./guacamole/postgresql \
+                ./guacamole/ldap \
+                ./guacamole/bin \
+                ./tomcat \
+                ./nativeBuild
+
+apache_dl_url="http://www.apache.org/dyn/closer.cgi?action=download"
+MySQL_Connector_Version="8.0.17"
+PostGresql_Connector_Version="42.2.8"
+TOMCAT_MAJOR=8
+TOMCAT_MINOR=5
+TOMCAT_PATCH=$(curl -s https://www-us.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR}/ | grep -o v${TOMCAT_MAJOR}.${TOMCAT_MINOR}.*\/ | cut -f 3 -d . | cut -f 1 -d /)
+TOMCAT_Version=${TOMCAT_MAJOR}.${TOMCAT_MINOR}.${TOMCAT_PATCH}
+
+echo "Downloading ${apache_dl_url}&filename=tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz"
+curl -s -L "${apache_dl_url}&filename=tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz" \
+      -o - | tar xz -C "./tomcat" --strip-components=1
+#---------------------------------------------------------------------------------------------------------------------------------------------
+echo "Extracting tomcat-native.tar.gz" && \
+tar -xzf ./tomcat/bin/tomcat-native.tar.gz -C "./nativeBuild" --strip-components=1
+#---------------------------------------------------------------------------------------------------------------------------------------------
+echo "Downloading ${apache_dl_url}&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-ldap-${GUACAMOLE_Version}.tar.gz" && \
+curl -s -L "${apache_dl_url}&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-ldap-${GUACAMOLE_Version}.tar.gz" \
+    -o - | tar xz -C "./guacamole/ldap" --strip-components=1 \
+                                        guacamole-auth-ldap-${GUACAMOLE_Version}/guacamole-auth-ldap-${GUACAMOLE_Version}.jar \
+                                        guacamole-auth-ldap-${GUACAMOLE_Version}/schema
+#---------------------------------------------------------------------------------------------------------------------------------------------
+echo "Downloading ${apache_dl_url}&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-jdbc-${GUACAMOLE_Version}.tar.gzz" && \
+curl -s -L "${apache_dl_url}&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-jdbc-${GUACAMOLE_Version}.tar.gz" \
+    -o - | tar xz -C "./guacamole/" --strip-components=1 \
+                                        guacamole-auth-jdbc-${GUACAMOLE_Version}/mysql \
+                                        guacamole-auth-jdbc-${GUACAMOLE_Version}/postgresql
+#---------------------------------------------------------------------------------------------------------------------------------------------
+echo "Downloading ${apache_dl_url}&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-${GUACAMOLE_Version}.war" && \
+curl -s -L "${apache_dl_url}&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-${GUACAMOLE_Version}.war" \
+    -o "./guacamole/guacamole.war"
+#---------------------------------------------------------------------------------------------------------------------------------------------
+echo "Downloading https://cdn.mysql.com/Downloads/Connector-J/mysql-connector-java-${MySQL_Connector_Version}.tar.gz" && \
+curl -s -L "https://cdn.mysql.com/Downloads/Connector-J/mysql-connector-java-${MySQL_Connector_Version}.tar.gz" \
+    -o - | tar xz -C "./guacamole/mysql" --strip-components=1 \
+                                        mysql-connector-java-${MySQL_Connector_Version}/mysql-connector-java-${MySQL_Connector_Version}.jar
+#---------------------------------------------------------------------------------------------------------------------------------------------
+echo "Downloading https://jdbc.postgresql.org/download/postgresql-${PostGresql_Connector_Version}.jar" && \
+curl -s -L "https://jdbc.postgresql.org/download/postgresql-${PostGresql_Connector_Version}.jar" \
+    -o "./guacamole/postgresql/postgresql-${PostGresql_Connector_Version}.jar"
+#---------------------------------------------------------------------------------------------------------------------------------------------
+echo "Downloading https://raw.githubusercontent.com/apache/incubator-guacamole-client/${GUACAMOLE_Version}/guacamole-docker/bin/start.sh" && \
+curl -s -L "https://raw.githubusercontent.com/apache/incubator-guacamole-client/${GUACAMOLE_Version}/guacamole-docker/bin/start.sh" \
+    -o "./guacamole/bin/start.sh"
+#---------------------------------------------------------------------------------------------------------------------------------------------
+echo "Downloading https://raw.githubusercontent.com/apache/incubator-guacamole-client/${GUACAMOLE_Version}/guacamole-docker/bin/initdb.sh" && \
+curl -s -L "https://raw.githubusercontent.com/apache/incubator-guacamole-client/${GUACAMOLE_Version}/guacamole-docker/bin/initdb.sh" \
+    -o "./guacamole/bin/initdb.sh"
+
+echo "✅ Will build the following architectures: $(IFS=, ; echo "${build_architectures[@]}")"
 echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
 
-for arch in ${verified_build_architectures[@]}; do
+for arch in ${build_architectures[@]}; do
   echo "✅ building $arch"
   echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
 
-  BASE_IMAGE_PREFIX="${base_image_prefix_map[${arch}]}"
-  docker build \
-    --build-arg BASE_IMAGE_PREFIX=${BASE_IMAGE_PREFIX} \
+  docker exec docker_daemon docker build \
+    --squash \
+    --platform=${arch} \
+    --build-arg BASE_IMAGE_PREFIX=${base_image_prefix_map[${arch}]} \
     --build-arg ARCH=${arch} \
     --build-arg GUACAMOLE_Version=${GUACAMOLE_Version} \
-    --file $DOCKERFILE_PATH \
+    --build-arg TOMCAT_Version=${TOMCAT_Version} \
+    --build-arg MySQL_Connector_Version=${MySQL_Connector_Version} \
+    --build-arg PostGresql_Connector_Version=${PostGresql_Connector_Version} \
+    --file /build/$DOCKERFILE_PATH \
     --tag "${IMAGE_NAME}-${arch}"  \
-    .
+    /build
 done
 
 echo "✅ images built:"
 echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
-docker image ls
-
-# https://github.com/moby/moby/issues/36552
-#
-tempdir=$(mktemp -d -t yolo.XXXXXXXX)
-cd $tempdir
-
-for arch in ${verified_build_architectures[@]}; do
-  echo "✅ yolo fixing platform $arch"
-  echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
-
-  manifest_arch=${docker_to_manifest_map[${arch}]}
-  docker save "${IMAGE_NAME}-${arch}"| tar xv
-
-  for filename in */json; do
-    [ -e "$filename" ] || continue
-    jq --compact-output 'del(.architecture)' < "$filename" | sponge "$filename"
-  done
-
-  for filename in *.json; do
-    [ -e "$filename" ] || continue
-    ! [ $filename = "manifest.json" ] || continue
-
-    jq --arg architecture "$manifest_arch" \
-       --compact-output '.architecture=$architecture' < "$filename" | sponge "$filename"
-  done
-
-  tar cv . | docker load
-  rm -rf $tempdir/*
-done
+docker exec docker_daemon docker image ls
 
 trap "exit 1"          HUP INT PIPE QUIT TERM
-trap "rm -rf $tempdir" EXIT
