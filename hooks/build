@@ -14,6 +14,7 @@ mkdir -p ./guacamole/mysql \
                 ./nativeBuild
 
 apache_dl_url="http://www.apache.org/dyn/closer.cgi?action=download"
+GUACAMOLE_Version="1.0.0"
 MySQL_Connector_Version="8.0.17"
 PostGresql_Connector_Version="42.2.8"
 TOMCAT_MAJOR=8
