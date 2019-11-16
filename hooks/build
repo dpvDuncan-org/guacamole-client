@@ -6,7 +6,7 @@ source hooks/.config
 
 echo "✅ Download Tomcat & binaries)"
 echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
-RUN mkdir -p ./guacamole/mysql \
+mkdir -p ./guacamole/mysql \
                 ./guacamole/postgresql \
                 ./guacamole/ldap \
                 ./guacamole/bin \
