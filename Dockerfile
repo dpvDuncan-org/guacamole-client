@@ -35,6 +35,10 @@ COPY tomcat ${CATALINA_HOME}
 COPY nativeBuild /tmp/
 COPY guacamole /opt/
 
+RUN echo "ls ${CATALINA_HOME} : $(ls ${CATALINA_HOME})"
+RUN echo "ls /tmp : $(ls /tmp)"
+RUN echo "ls /opt : $(ls /opt)"
+
 RUN apk -U -q --no-cache upgrade
 RUN apk add --no-cache -U -q openjdk8-jre-base ca-certificates
 RUN apk add --no-cache -U -q --virtual .native-build-deps apr-dev gcc libc-dev make openjdk8
@@ -55,7 +59,6 @@ RUN nativeLines="$(catalina.sh configtest 2>&1 | grep 'Apache Tomcat Native' | s
     exit 1 ; \
     fi && \
 RUN rm -rf $CATALINA_HOME/webapps/* /tmp/* /var/cache/apk/* /usr/bin/qemu-*-static
-RUN ln -s /opt/guacamole/guacamole.war $CATALINA_HOME/webapps/guacamole.war
 RUN chmod +x /opt/guacamole/bin/*.sh
 
 # ports and volumes

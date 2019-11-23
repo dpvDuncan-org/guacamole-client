@@ -62,6 +62,11 @@ echo "Downloading https://raw.githubusercontent.com/apache/incubator-guacamole-c
 curl -s -L "https://raw.githubusercontent.com/apache/incubator-guacamole-client/${GUACAMOLE_Version}/guacamole-docker/bin/initdb.sh" \
     -o "./guacamole/bin/initdb.sh"
 
+echo "✅ Downloaded content"
+echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+
+ls -hl *
+
 echo "✅ Will build the following architectures: $(IFS=, ; echo "${build_architectures[@]}")"
 echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
 

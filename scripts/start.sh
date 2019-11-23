@@ -16,4 +16,10 @@ then
         USERNAME=medusa
 fi
 
+if [ ! ${BASE_URL} ]
+        ln -s /opt/guacamole/guacamole.war $CATALINA_HOME/webapps/ROOT.war
+else
+        ln -s /opt/guacamole/guacamole.war $CATALINA_HOME/webapps/${BASE_URL}.war
+fi
+
 su - $USERNAME -c '/opt/guacamole/bin/start.sh'
