@@ -19,7 +19,7 @@ MySQL_Connector_Version="8.0.17"
 PostGresql_Connector_Version="42.2.8"
 TOMCAT_MAJOR=8
 TOMCAT_MINOR=5
-TOMCAT_PATCH=$(curl -s https://www-us.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR}/ | grep -o v${TOMCAT_MAJOR}.${TOMCAT_MINOR}.*/ | cut -f 3 -d . | cut -f 1 -d /)
+TOMCAT_PATCH=$(curl -s https://www-us.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR}/ | grep -o v${TOMCAT_MAJOR}.${TOMCAT_MINOR}.*/ | tail -1 | cut -f 3 -d . | cut -f 1 -d /)
 TOMCAT_Version=${TOMCAT_MAJOR}.${TOMCAT_MINOR}.${TOMCAT_PATCH}
 
 echo "Downloading ${apache_dl_url}&filename=tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz"
