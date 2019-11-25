@@ -32,8 +32,8 @@ ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}${TOMCAT_NATIVE_LIBDIR
 
 COPY scripts/start.sh /
 COPY tomcat ${CATALINA_HOME}
-COPY nativeBuild /tmp/
-COPY guacamole /opt/
+COPY nativeBuild /tmp/nativeBuild
+COPY guacamole /opt/guacamole
 
 RUN echo "ls ${CATALINA_HOME} : $(ls ${CATALINA_HOME})"
 RUN echo "ls /tmp : $(ls /tmp)"
