@@ -17,6 +17,7 @@ then
 fi
 
 if [ ! ${BASE_URL} ]
+then
         ln -s /opt/guacamole/guacamole.war $CATALINA_HOME/webapps/ROOT.war
 else
         ln -s /opt/guacamole/guacamole.war $CATALINA_HOME/webapps/${BASE_URL}.war
