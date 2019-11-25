@@ -35,7 +35,7 @@ curl -s -L "${apache_dl_url}&filename=guacamole/${GUACAMOLE_Version}/binary/guac
                                         guacamole-auth-ldap-${GUACAMOLE_Version}/guacamole-auth-ldap-${GUACAMOLE_Version}.jar \
                                         guacamole-auth-ldap-${GUACAMOLE_Version}/schema
 #---------------------------------------------------------------------------------------------------------------------------------------------
-echo "Downloading ${apache_dl_url}&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-jdbc-${GUACAMOLE_Version}.tar.gzz" && \
+echo "Downloading ${apache_dl_url}&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-jdbc-${GUACAMOLE_Version}.tar.gz" && \
 curl -s -L "${apache_dl_url}&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-auth-jdbc-${GUACAMOLE_Version}.tar.gz" \
     -o - | tar xz -C "./guacamole/" --strip-components=1 \
                                         guacamole-auth-jdbc-${GUACAMOLE_Version}/mysql \
