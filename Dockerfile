@@ -59,7 +59,6 @@ RUN set -e && \
     exit 1 ; \
     fi
 RUN rm -rf $CATALINA_HOME/webapps/* /tmp/* /var/cache/apk/* /usr/bin/qemu-*-static
-RUN chmod +x /opt/guacamole/bin/*.sh
 
 # ports and volumes
 EXPOSE 8080
