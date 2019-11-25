@@ -57,7 +57,7 @@ RUN set -e && \
     then \
     echo >&2 "$nativeLines" ; \
     exit 1 ; \
-    fi && \
+    fi
 RUN rm -rf $CATALINA_HOME/webapps/* /tmp/* /var/cache/apk/* /usr/bin/qemu-*-static
 RUN chmod +x /opt/guacamole/bin/*.sh
 
