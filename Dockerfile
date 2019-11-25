@@ -59,6 +59,8 @@ RUN set -e && \
     exit 1 ; \
     fi
 RUN rm -rf $CATALINA_HOME/webapps/* /tmp/* /var/cache/apk/* /usr/bin/qemu-*-static
+RUN ls /opt/guacamole/*
+RUN ls /
 RUN chmod +x /opt/guacamole/bin/*.sh /start.sh
 
 # ports and volumes
