@@ -23,4 +23,4 @@ else
         ln -s /opt/guacamole/guacamole.war $CATALINA_HOME/webapps/${BASE_URL}.war
 fi
 
-su - $USERNAME -c '/opt/guacamole/bin/start.sh'
+su $USERNAME -c '/opt/guacamole/bin/start.sh'
