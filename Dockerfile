@@ -58,13 +58,8 @@ RUN set -e && \
     echo >&2 "$nativeLines" ; \
     exit 1 ; \
     fi
+RUN chmod +x /start.sh /opt/guacamole/bin/*.sh
 RUN rm -rf $CATALINA_HOME/webapps/* /tmp/* /var/cache/apk/* /usr/bin/qemu-*-static
-RUN ls -hal /
-RUN ls -hal /opt/guacamole
-RUN ls -hal /opt/guacamole/bin
-RUN chmod +x /start.sh
-RUN chmod +x /opt/guacamole/bin/start.sh
-RUN chmod +x /opt/guacamole/bin/initdb.sh
 
 # ports and volumes
 EXPOSE 8080
