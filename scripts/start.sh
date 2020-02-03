@@ -6,14 +6,14 @@ USERNAME=$(getent passwd $PUID | cut -d: -f1)
 
 if [ ! $GROUPNAME ]
 then
-        addgroup -g $PGID medusa
-        GROUPNAME=medusa
+        addgroup -g $PGID guacamole
+        GROUPNAME=guacamole
 fi
 
 if [ ! $USERNAME ]
 then
-        adduser -G $GROUPNAME -u $PUID -D medusa
-        USERNAME=medusa
+        adduser -G $GROUPNAME -u $PUID -D guacamole
+        USERNAME=guacamole
 fi
 
 if [ ! ${BASE_URL} ]
