@@ -15,7 +15,7 @@ mkdir -p ./guacamole/mysql \
 
 apache_dl_url="http://www.apache.org/dyn/closer.cgi?action=download"
 
-MySQL_Connector_Version="8.0.17"
+MySQL_Connector_Version="8.0.18"
 PostGresql_Connector_Version="42.2.8"
 TOMCAT_MAJOR=8
 TOMCAT_MINOR=5
@@ -45,8 +45,8 @@ echo "Downloading ${apache_dl_url}&filename=guacamole/${GUACAMOLE_Version}/binar
 curl -s -L "${apache_dl_url}&filename=guacamole/${GUACAMOLE_Version}/binary/guacamole-${GUACAMOLE_Version}.war" \
     -o "./guacamole/guacamole.war"
 #---------------------------------------------------------------------------------------------------------------------------------------------
-echo "Downloading https://cdn.mysql.com/Downloads/Connector-J/mysql-connector-java-${MySQL_Connector_Version}.tar.gz" && \
-curl -s -L "https://cdn.mysql.com/Downloads/Connector-J/mysql-connector-java-${MySQL_Connector_Version}.tar.gz" \
+echo "Downloading https://downloads.mysql.com/archives/get/p/3/file/mysql-connector-java-${MySQL_Connector_Version}.tar.gz" && \
+curl -s -L "https://downloads.mysql.com/archives/get/p/3/file/mysql-connector-java-${MySQL_Connector_Version}.tar.gz" \
     -o - | tar xz -C "./guacamole/mysql" --strip-components=1 \
                                         mysql-connector-java-${MySQL_Connector_Version}/mysql-connector-java-${MySQL_Connector_Version}.jar
 #---------------------------------------------------------------------------------------------------------------------------------------------
