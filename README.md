@@ -1,1 +1,1 @@
-# guacamole-client
+# Guacamole Client
