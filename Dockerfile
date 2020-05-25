@@ -53,7 +53,7 @@ RUN apk del .native-build-deps
 RUN rm -f bin/*.bat
 RUN set -e && \
     nativeLines="$(catalina.sh configtest 2>&1 | grep 'Apache Tomcat Native' | sort -u)" && \
-    if ! echo "$nativeLines" | grep 'INFO: Loaded APR based Apache Tomcat Native library' >&2 ; \
+    if ! echo "$nativeLines" | grep 'INFO: Loaded Apache Tomcat Native library' >&2 ; \
     then \
     echo >&2 "$nativeLines" ; \
     exit 1 ; \
