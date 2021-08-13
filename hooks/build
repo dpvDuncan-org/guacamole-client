@@ -82,9 +82,9 @@ for arch in ${build_architectures[@]}; do
     --build-arg TOMCAT_Version=${TOMCAT_Version} \
     --build-arg MySQL_Connector_Version=${MySQL_Connector_Version} \
     --build-arg PostGresql_Connector_Version=${PostGresql_Connector_Version} \
-    --file /build/$DOCKERFILE_PATH \
+    --file /build/${IMAGE_NAME_simple}/${DOCKERFILE_PATH} \
     --tag "${IMAGE_NAME}-${arch}"  \
-    /build
+    /build/${IMAGE_NAME_simple}
 done
 
 echo "✅ images built:"
