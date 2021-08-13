@@ -1,10 +1,6 @@
 ARG BASE_IMAGE_PREFIX
 
-FROM multiarch/qemu-user-static as qemu
-
 FROM ${BASE_IMAGE_PREFIX}alpine
-
-COPY --from=qemu /usr/bin/qemu-*-static /usr/bin/
 
 ENV PUID=0
 ENV PGID=0
@@ -59,7 +55,7 @@ RUN set -e && \
     exit 1 ; \
     fi
 RUN chmod +x /start.sh /opt/guacamole/bin/*.sh
-RUN rm -rf $CATALINA_HOME/webapps/* /tmp/* /var/cache/apk/* /usr/bin/qemu-*-static
+RUN rm -rf $CATALINA_HOME/webapps/* /tmp/* /var/cache/apk/*
 
 # ports and volumes
 EXPOSE 8080
