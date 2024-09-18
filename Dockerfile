@@ -34,7 +34,7 @@ RUN echo "ls /tmp : $(ls /tmp)"
 RUN echo "ls /opt : $(ls /opt)"
 
 RUN apk -U -q --no-cache upgrade
-RUN apk add --no-cache -U -q openjdk21-jre-headless ca-certificates openssl
+RUN apk add --no-cache -U -q openjdk21-jre-headless ca-certificates openssl bash
 RUN apk add --no-cache -U -q --virtual .native-build-deps apr-dev gcc libc-dev make openjdk21 openssl-dev
 WORKDIR ${nativeBuildDir}/native
 RUN ./configure --libdir="${TOMCAT_NATIVE_LIBDIR}" --with-apr="$(which apr-1-config)" --with-java-home="${JAVA_HOME}" --with-ssl=/usr/lib
