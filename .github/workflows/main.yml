@@ -66,12 +66,12 @@ jobs:
         echo "Downloading ${apache_dl_url}/guacamole/${{ vars.GUACAMOLE_Version }}/binary/guacamole-${{ vars.GUACAMOLE_Version }}.war?action=download" &&
           curl -s -L "${apache_dl_url}/guacamole/${{ vars.GUACAMOLE_Version }}/binary/guacamole-${{ vars.GUACAMOLE_Version }}.war?action=download" -o "./guacamole/guacamole.war"
         #---------------------------------------------------------------------------------------------------------------------------------------------
-        echo "Downloading https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-${{ env.MySQL_Connector_Version }}.tar.gz" &&
-          curl -s -L "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-${{ env.MySQL_Connector_Version }}.tar.gz" -o - | tar xz -C "./guacamole/mysql" --strip-components=1
-                                                mysql-connector-j-${{ env.MySQL_Connector_Version }}/mysql-connector-j-${{ env.MySQL_Connector_Version }}.jar
+        echo "Downloading https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-${{ vars.MySQL_Connector_Version }}.tar.gz" &&
+          curl -s -L "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-${{ vars.MySQL_Connector_Version }}.tar.gz" -o - | tar xz -C "./guacamole/mysql" --strip-components=1
+                                                mysql-connector-j-${{ vars.MySQL_Connector_Version }}/mysql-connector-j-${{ vars.MySQL_Connector_Version }}.jar
         #---------------------------------------------------------------------------------------------------------------------------------------------
-        echo "Downloading https://jdbc.postgresql.org/download/postgresql-${{ env.PostGresql_Connector_Version }}.jar" &&
-          curl -s -L "https://jdbc.postgresql.org/download/postgresql-${{ env.PostGresql_Connector_Version }}.jar" -o "./guacamole/postgresql/postgresql-${{ env.PostGresql_Connector_Version }}.jar"
+        echo "Downloading https://jdbc.postgresql.org/download/postgresql-${{ vars.PostGresql_Connector_Version }}.jar" &&
+          curl -s -L "https://jdbc.postgresql.org/download/postgresql-${{ vars.PostGresql_Connector_Version }}.jar" -o "./guacamole/postgresql/postgresql-${{ vars.PostGresql_Connector_Version }}.jar"
         #---------------------------------------------------------------------------------------------------------------------------------------------
         for script in start.sh initdb.sh
         do
@@ -88,7 +88,7 @@ jobs:
         push: true
         tags: ${{ env.IMAGE_NAME }}
         build-args: |
-          GUACAMOLE_Version=${{ env.GUACAMOLE_Version }}
+          GUACAMOLE_Version=${{ vars.GUACAMOLE_Version }}
           TOMCAT_Version=${{ steps.prepare_version.outputs.TOMCAT_Version }}
-          MySQL_Connector_Version=${{ env.MySQL_Connector_Version }}
-          PostGresql_Connector_Version=${{ env.PostGresql_Connector_Version }}
+          MySQL_Connector_Version=${{ vars.MySQL_Connector_Version }}
+          PostGresql_Connector_Version=${{ vars.PostGresql_Connector_Version }}
