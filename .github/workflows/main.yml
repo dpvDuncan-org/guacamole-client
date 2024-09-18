@@ -46,8 +46,7 @@ jobs:
         TOMCAT_Version=${{ vars.TOMCAT_MAJOR }}.${{ vars.TOMCAT_MINOR }}.${TOMCAT_PATCH}
         echo "TOMCAT_Version=${TOMCAT_Version}" >> $GITHUB_OUTPUT
         echo "Downloading ${apache_dl_url}/tomcat/tomcat-${{ vars.TOMCAT_MAJOR }}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz?action=download" && 
-          curl -s -L "${apache_dl_url}/tomcat/tomcat-${{ vars.TOMCAT_MAJOR }}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz?action=download"
-            -o - | tar xz -C "./tomcat" --strip-components=1
+          curl -s -L "${apache_dl_url}/tomcat/tomcat-${{ vars.TOMCAT_MAJOR }}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz?action=download" -o - | tar xz -C "./tomcat" --strip-components=1
         #---------------------------------------------------------------------------------------------------------------------------------------------
         echo "Extracting tomcat-native.tar.gz" &&
           tar -xzf ./tomcat/bin/tomcat-native.tar.gz -C "./nativeBuild" --strip-components=1
@@ -61,28 +60,23 @@ jobs:
             output_folder="./guacamole/"
           fi
           echo "Downloading ${apache_dl_url}/guacamole/${{ vars.GUACAMOLE_Version }}/binary/${module}-${{ vars.GUACAMOLE_Version }}.tar.gz?action=download" &&
-            curl -s -L "${apache_dl_url}/guacamole/${{ vars.GUACAMOLE_Version }}/binary/${module}-${{ vars.GUACAMOLE_Version }}.tar.gz?action=download"
-              -o - | tar xz -C "${output_folder}" --strip-components=1
+            curl -s -L "${apache_dl_url}/guacamole/${{ vars.GUACAMOLE_Version }}/binary/${module}-${{ vars.GUACAMOLE_Version }}.tar.gz?action=download" -o - | tar xz -C "${output_folder}" --strip-components=1
         done
         #---------------------------------------------------------------------------------------------------------------------------------------------
         echo "Downloading ${apache_dl_url}/guacamole/${{ vars.GUACAMOLE_Version }}/binary/guacamole-${{ vars.GUACAMOLE_Version }}.war?action=download" &&
-          curl -s -L "${apache_dl_url}/guacamole/${{ vars.GUACAMOLE_Version }}/binary/guacamole-${{ vars.GUACAMOLE_Version }}.war?action=download"
-            -o "./guacamole/guacamole.war"
+          curl -s -L "${apache_dl_url}/guacamole/${{ vars.GUACAMOLE_Version }}/binary/guacamole-${{ vars.GUACAMOLE_Version }}.war?action=download" -o "./guacamole/guacamole.war"
         #---------------------------------------------------------------------------------------------------------------------------------------------
         echo "Downloading https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-${{ env.MySQL_Connector_Version }}.tar.gz" &&
-          curl -s -L "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-${{ env.MySQL_Connector_Version }}.tar.gz"
-            -o - | tar xz -C "./guacamole/mysql" --strip-components=1
+          curl -s -L "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-${{ env.MySQL_Connector_Version }}.tar.gz" -o - | tar xz -C "./guacamole/mysql" --strip-components=1
                                                 mysql-connector-j-${{ env.MySQL_Connector_Version }}/mysql-connector-j-${{ env.MySQL_Connector_Version }}.jar
         #---------------------------------------------------------------------------------------------------------------------------------------------
         echo "Downloading https://jdbc.postgresql.org/download/postgresql-${{ env.PostGresql_Connector_Version }}.jar" &&
-          curl -s -L "https://jdbc.postgresql.org/download/postgresql-${{ env.PostGresql_Connector_Version }}.jar"
-            -o "./guacamole/postgresql/postgresql-${{ env.PostGresql_Connector_Version }}.jar"
+          curl -s -L "https://jdbc.postgresql.org/download/postgresql-${{ env.PostGresql_Connector_Version }}.jar" -o "./guacamole/postgresql/postgresql-${{ env.PostGresql_Connector_Version }}.jar"
         #---------------------------------------------------------------------------------------------------------------------------------------------
         for script in start.sh initdb.sh
         do
           echo "Downloading https://raw.githubusercontent.com/apache/incubator-guacamole-client/${{ vars.GUACAMOLE_Version }}/guacamole-docker/bin/${script}" &&
-            curl -s -L "https://raw.githubusercontent.com/apache/incubator-guacamole-client/${{ vars.GUACAMOLE_Version }}/guacamole-docker/bin/${script}"
-              -o "./guacamole/bin/${script}"
+            curl -s -L "https://raw.githubusercontent.com/apache/incubator-guacamole-client/${{ vars.GUACAMOLE_Version }}/guacamole-docker/bin/${script}" -o "./guacamole/bin/${script}"
         done
     - name: Build
       uses: docker/build-push-action@v5
