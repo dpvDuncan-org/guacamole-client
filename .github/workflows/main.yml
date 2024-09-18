@@ -67,8 +67,7 @@ jobs:
           curl -s -L "${apache_dl_url}/guacamole/${{ vars.GUACAMOLE_Version }}/binary/guacamole-${{ vars.GUACAMOLE_Version }}.war?action=download" -o "./guacamole/guacamole.war"
         #---------------------------------------------------------------------------------------------------------------------------------------------
         echo "Downloading https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-${{ vars.MySQL_Connector_Version }}.tar.gz" &&
-          curl -s -L "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-${{ vars.MySQL_Connector_Version }}.tar.gz" -o - | tar xz -C "./guacamole/mysql" --strip-components=1
-                                                mysql-connector-j-${{ vars.MySQL_Connector_Version }}/mysql-connector-j-${{ vars.MySQL_Connector_Version }}.jar
+          curl -s -L "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-${{ vars.MySQL_Connector_Version }}.tar.gz" -o - | tar xz -C "./guacamole/mysql" --strip-components=1 mysql-connector-j-${{ vars.MySQL_Connector_Version }}/mysql-connector-j-${{ vars.MySQL_Connector_Version }}.jar
         #---------------------------------------------------------------------------------------------------------------------------------------------
         echo "Downloading https://jdbc.postgresql.org/download/postgresql-${{ vars.PostGresql_Connector_Version }}.jar" &&
           curl -s -L "https://jdbc.postgresql.org/download/postgresql-${{ vars.PostGresql_Connector_Version }}.jar" -o "./guacamole/postgresql/postgresql-${{ vars.PostGresql_Connector_Version }}.jar"
