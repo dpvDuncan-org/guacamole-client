@@ -1,0 +1,100 @@
+name: Build Image
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
+  push:
+
+env:
+  IMAGE_NAME: dpvduncan/guacamole-client:${{ vars.GUACAMOLE_Version }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: all
+
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to DockerHub
+      if: github.event_name != 'pull_request'
+      uses: docker/login-action@v3
+      with:
+        username: ${{ vars.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Install jq
+      uses: dcarbone/install-jq-action@v2
+
+    - name: Prepare variables
+      id: prepare_version
+      run: |
+        echo "✅ Download Tomcat & binaries"
+        echo "------------------------------------------------------------------------------------------------"
+        mkdir -p ./guacamole/mysql ./guacamole/postgresql ./guacamole/ldap ./guacamole/bin ./tomcat ./nativeBuild
+        # - apache_dl_url="http://www.apache.org/dyn/closer.cgi?action=download"
+        apache_dl_url="https://apache.org/dyn/closer.lua"
+        TOMCAT_PATCH=$(curl -s https://downloads.apache.org/tomcat/tomcat-${{ vars.TOMCAT_MAJOR }}/ | grep -o v${{ vars.TOMCAT_MAJOR }}.${{ vars.TOMCAT_MINOR }}.*/ | tail -1 | cut -f 3 -d . | cut -f 1 -d /)
+        echo "TOMCAT_PATCH=${TOMCAT_PATCH}" >> $GITHUB_OUTPUT
+        TOMCAT_Version=${{ vars.TOMCAT_MAJOR }}.${{ vars.TOMCAT_MINOR }}.${TOMCAT_PATCH}
+        echo "Downloading ${apache_dl_url}/tomcat/tomcat-${{ vars.TOMCAT_MAJOR }}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz?action=download" && 
+          curl -s -L "${apache_dl_url}/tomcat/tomcat-${{ vars.TOMCAT_MAJOR }}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz?action=download"
+            -o - | tar xz -C "./tomcat" --strip-components=1
+        #---------------------------------------------------------------------------------------------------------------------------------------------
+        echo "Extracting tomcat-native.tar.gz" &&
+          tar -xzf ./tomcat/bin/tomcat-native.tar.gz -C "./nativeBuild" --strip-components=1
+        #---------------------------------------------------------------------------------------------------------------------------------------------
+        for module in guacamole-auth-duo guacamole-auth-header guacamole-auth-jdbc guacamole-auth-json guacamole-auth-ldap guacamole-auth-quickconnect guacamole-auth-sso guacamole-auth-totp guacamole-history-recording-storage guacamole-vault
+        do
+          if [ "${module}" == "guacamole-auth-ldap" ]
+          then
+            output_folder="./guacamole/ldap"
+          else
+            output_folder="./guacamole/"
+          fi
+          echo "Downloading ${apache_dl_url}/guacamole/${{ vars.GUACAMOLE_Version }}/binary/${module}-${{ vars.GUACAMOLE_Version }}.tar.gz?action=download" &&
+            curl -s -L "${apache_dl_url}/guacamole/${{ vars.GUACAMOLE_Version }}/binary/${module}-${{ vars.GUACAMOLE_Version }}.tar.gz?action=download"
+              -o - | tar xz -C "${output_folder}" --strip-components=1
+        done
+        #---------------------------------------------------------------------------------------------------------------------------------------------
+        echo "Downloading ${apache_dl_url}/guacamole/${{ vars.GUACAMOLE_Version }}/binary/guacamole-${{ vars.GUACAMOLE_Version }}.war?action=download" &&
+          curl -s -L "${apache_dl_url}/guacamole/${{ vars.GUACAMOLE_Version }}/binary/guacamole-${{ vars.GUACAMOLE_Version }}.war?action=download"
+            -o "./guacamole/guacamole.war"
+        #---------------------------------------------------------------------------------------------------------------------------------------------
+        echo "Downloading https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-${{ env.MySQL_Connector_Version }}.tar.gz" &&
+          curl -s -L "https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-j-${{ env.MySQL_Connector_Version }}.tar.gz"
+            -o - | tar xz -C "./guacamole/mysql" --strip-components=1
+                                                mysql-connector-j-${{ env.MySQL_Connector_Version }}/mysql-connector-j-${{ env.MySQL_Connector_Version }}.jar
+        #---------------------------------------------------------------------------------------------------------------------------------------------
+        echo "Downloading https://jdbc.postgresql.org/download/postgresql-${{ env.PostGresql_Connector_Version }}.jar" &&
+          curl -s -L "https://jdbc.postgresql.org/download/postgresql-${{ env.PostGresql_Connector_Version }}.jar"
+            -o "./guacamole/postgresql/postgresql-${{ env.PostGresql_Connector_Version }}.jar"
+        #---------------------------------------------------------------------------------------------------------------------------------------------
+        for script in start.sh initdb.sh
+        do
+          echo "Downloading https://raw.githubusercontent.com/apache/incubator-guacamole-client/${{ vars.GUACAMOLE_Version }}/guacamole-docker/bin/${script}" &&
+            curl -s -L "https://raw.githubusercontent.com/apache/incubator-guacamole-client/${{ vars.GUACAMOLE_Version }}/guacamole-docker/bin/${script}"
+              -o "./guacamole/bin/${script}"
+        done
+    - name: Build
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        platforms: |
+          linux/amd64
+          linux/arm64
+        push: true
+        tags: ${{ env.IMAGE_NAME }}
+        build-args: |
+          GUACAMOLE_Version=${{ env.GUACAMOLE_Version }}
+          TOMCAT_Version=${{ steps.prepare_version.outputs.TOMCAT_Version }}
+          MySQL_Connector_Version=${{ env.MySQL_Connector_Version }}
+          PostGresql_Connector_Version=${{ env.PostGresql_Connector_Version }}

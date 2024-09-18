@@ -1,7 +1,4 @@
-# syntax=docker/dockerfile:1
-ARG BASE_IMAGE_PREFIX
-
-FROM ${BASE_IMAGE_PREFIX}alpine
+FROM alpine
 
 ENV PUID=0
 ENV PGID=0
@@ -18,13 +15,13 @@ ENV MySQL_Connector_Version=${MySQL_Connector_Version}
 ARG PostGresql_Connector_Version
 ENV PostGresql_Connector_Version=${PostGresql_Connector_Version}
 
-ENV JAVA_HOME="/usr/lib/jvm/java-1.8-openjdk"
+ENV JAVA_HOME="/usr/lib/jvm/java-21-openjdk"
 ENV LANG="C.UTF-8"
 ENV CATALINA_HOME="/usr/local/tomcat"
 ENV nativeBuildDir="/tmp/nativeBuild"
 ENV TOMCAT_NATIVE_LIBDIR="/usr/lib"
 
-ENV PATH="${CATALINA_HOME}/bin:$PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin"
+ENV PATH="${CATALINA_HOME}/bin:$PATH:/usr/lib/jvm/java-21-openjdk/jre/bin:/usr/lib/jvm/java-21-openjdk/bin"
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH:+$LD_LIBRARY_PATH:}${TOMCAT_NATIVE_LIBDIR}"
 
 COPY scripts/start.sh /
@@ -37,8 +34,8 @@ RUN echo "ls /tmp : $(ls /tmp)"
 RUN echo "ls /opt : $(ls /opt)"
 
 RUN apk -U -q --no-cache upgrade
-RUN apk add --no-cache -U -q openjdk8-jre-base ca-certificates
-RUN apk add --no-cache -U -q --virtual .native-build-deps apr-dev gcc libc-dev make openjdk8
+RUN apk add --no-cache -U -q openjdk21-jre-headless ca-certificates
+RUN apk add --no-cache -U -q --virtual .native-build-deps apr-dev gcc libc-dev make openjdk21
 WORKDIR ${nativeBuildDir}/native
 RUN ./configure --libdir="${TOMCAT_NATIVE_LIBDIR}" --with-apr="$(which apr-1-config)" --with-java-home="${JAVA_HOME}" --with-ssl=no
 RUN make
