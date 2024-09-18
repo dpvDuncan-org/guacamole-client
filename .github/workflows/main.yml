@@ -43,8 +43,8 @@ jobs:
         # - apache_dl_url="http://www.apache.org/dyn/closer.cgi?action=download"
         apache_dl_url="https://apache.org/dyn/closer.lua"
         TOMCAT_PATCH=$(curl -s https://downloads.apache.org/tomcat/tomcat-${{ vars.TOMCAT_MAJOR }}/ | grep -o v${{ vars.TOMCAT_MAJOR }}.${{ vars.TOMCAT_MINOR }}.*/ | tail -1 | cut -f 3 -d . | cut -f 1 -d /)
-        echo "TOMCAT_PATCH=${TOMCAT_PATCH}" >> $GITHUB_OUTPUT
         TOMCAT_Version=${{ vars.TOMCAT_MAJOR }}.${{ vars.TOMCAT_MINOR }}.${TOMCAT_PATCH}
+        echo "TOMCAT_Version=${TOMCAT_Version}" >> $GITHUB_OUTPUT
         echo "Downloading ${apache_dl_url}/tomcat/tomcat-${{ vars.TOMCAT_MAJOR }}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz?action=download" && 
           curl -s -L "${apache_dl_url}/tomcat/tomcat-${{ vars.TOMCAT_MAJOR }}/v${TOMCAT_Version}/bin/apache-tomcat-${TOMCAT_Version}.tar.gz?action=download"
             -o - | tar xz -C "./tomcat" --strip-components=1
