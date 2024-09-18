@@ -37,7 +37,7 @@ RUN apk -U -q --no-cache upgrade
 RUN apk add --no-cache -U -q openjdk21-jre-headless ca-certificates
 RUN apk add --no-cache -U -q --virtual .native-build-deps apr-dev gcc libc-dev make openjdk21
 WORKDIR ${nativeBuildDir}/native
-RUN ./configure --libdir="${TOMCAT_NATIVE_LIBDIR}" --with-apr="$(which apr-1-config)" --with-java-home="${JAVA_HOME}" --without-ssl
+RUN ./configure --libdir="${TOMCAT_NATIVE_LIBDIR}" --with-apr="$(which apr-1-config)" --with-java-home="${JAVA_HOME}"
 RUN make
 RUN make install
 WORKDIR ${CATALINA_HOME}
